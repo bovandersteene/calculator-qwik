@@ -1,25 +1,21 @@
-import {
-  component$,
-  useClientEffect$,
-  useStore,
-  useWatch$,
-} from '@builder.io/qwik';
-import { DocumentHead, useLocation } from '@builder.io/qwik-city';
-import Done from './done';
-import { Calc } from './calc';
+import { component$, useClientEffect$, useStore, useWatch$ } from "@builder.io/qwik";
+import { DocumentHead, useLocation } from "@builder.io/qwik-city";
+import Done from "./done";
+import { Calc } from "./calc";
 import { Result } from "~/routes/calc/model";
 
 interface State {
   time: number;
   done: boolean;
-  results:Result []
+  results: Result [];
 }
 
 export default component$(() => {
   const { name, time } = useLocation().query;
+  const totalTime =  (+time) * 60 ;
 
   const state = useStore<State>({
-    time: (+time) * 60 / 6,
+    time:totalTime,
     done: false,
     results: []
   });
@@ -40,12 +36,16 @@ export default component$(() => {
     <>
       <h1>Hi {name}!</h1>
 
-      {state.done ? <Done results={state.results}/> : <div class='alert alert-primary'>Nog {state.time} seconden over</div>}
-      {state.done ? '' : <Calc submitResults$={results => state.results = results}/>}
+      {state.done ? <Done results={state.results} restart$={() => {
+        state.time = totalTime;
+        state.done = false;
+        state.results = [];
+      }} /> : <div class="alert alert-primary">Nog {state.time} seconden over</div>}
+      {state.done ? "" : <Calc submitResults$={results => state.results = results} />}
     </>
   );
 });
 
 export const head: DocumentHead = {
-  title: 'Qwik Flower',
+  title: "Firepeak - Rekentool"
 };
