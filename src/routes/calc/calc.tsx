@@ -1,5 +1,6 @@
 import { component$, useStore, useWatch$ } from "@builder.io/qwik";
 import { Result } from "~/routes/calc/model";
+import { useLocation } from "@builder.io/qwik-city";
 
 interface State {
   val1: number;
@@ -13,6 +14,7 @@ interface State {
 }
 
 export const Calc = component$((props: { submitResults$: (results: Result[]) => void }) => {
+  const { func } = useLocation().query;
 
   const maxValue = 10;
 
@@ -28,7 +30,7 @@ export const Calc = component$((props: { submitResults$: (results: Result[]) => 
     points: 0,
     lastResultRight: null,
     done: false,
-    func: "X"
+    func: func === "divide" ? ":" : "X"
   });
 
 
@@ -36,7 +38,7 @@ export const Calc = component$((props: { submitResults$: (results: Result[]) => 
     track(() => state.result);
     if (state.result) {
       const { result, val1, val2 } = state;
-      const expected = val1 * val2;
+      const expected = func === "divide" ? val1 / val2 : val1 * val2;
       const right = result === expected;
       const lastResult: Result = {
         val1, val2,

@@ -12,7 +12,7 @@ interface State {
 
 export default component$(() => {
   const { name, time } = useLocation().query;
-  const totalTime =  (+time) * 60 ;
+  const totalTime =  +(time ?? 2) * 60 ;
 
   const state = useStore<State>({
     time:totalTime,
